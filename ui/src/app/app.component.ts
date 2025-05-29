@@ -220,7 +220,7 @@ export class AppComponent implements AfterViewInit {
     this.addInProgress = true;
     this.downloads.add(url, quality, format, folder, customNamePrefix, playlistStrictMode, playlistItemLimit, autoStart).subscribe((status: Status) => {
       if (status.status === 'error') {
-        alert(`Error adding URL: ${status.msg}`);
+        alert(`Erreur en ajoutant l'URL: ${status.msg}`);
       } else {
         this.addUrl = '';
       }
@@ -329,40 +329,40 @@ export class AppComponent implements AfterViewInit {
       .map(url => url.trim())
       .filter(url => url.length > 0);
     if (urls.length === 0) {
-      alert('No valid URLs found.');
+      alert('Aucune URL valide trouvé.');
       return;
     }
     this.importInProgress = true;
     this.cancelImportFlag = false;
-    this.batchImportStatus = `Starting to import ${urls.length} URLs...`;
+    this.batchImportStatus = `Démarrage de l'import de ${urls.length} URLs...`;
     let index = 0;
     const delayBetween = 1000;
     const processNext = () => {
       if (this.cancelImportFlag) {
-        this.batchImportStatus = `Import cancelled after ${index} of ${urls.length} URLs.`;
+        this.batchImportStatus = `Import annulé après ${index} sur ${urls.length} URLs.`;
         this.importInProgress = false;
         return;
       }
       if (index >= urls.length) {
-        this.batchImportStatus = `Finished importing ${urls.length} URLs.`;
+        this.batchImportStatus = `Import terminé de ${urls.length} URLs.`;
         this.importInProgress = false;
         return;
       }
       const url = urls[index];
-      this.batchImportStatus = `Importing URL ${index + 1} of ${urls.length}: ${url}`;
+      this.batchImportStatus = `Import URL ${index + 1} sur ${urls.length}: ${url}`;
       // Now pass the selected quality, format, folder, etc. to the add() method
       this.downloads.add(url, this.quality, this.format, this.folder, this.customNamePrefix,
         this.playlistStrictMode, this.playlistItemLimit, this.autoStart)
         .subscribe({
           next: (status: Status) => {
             if (status.status === 'error') {
-              alert(`Error adding URL ${url}: ${status.msg}`);
+              alert(`Erreur en ajoutant l'url ${url}: ${status.msg}`);
             }
             index++;
             setTimeout(processNext, delayBetween);
           },
           error: (err) => {
-            console.error(`Error importing URL ${url}:`, err);
+            console.error(`Erreur en important l'url ${url}:`, err);
             index++;
             setTimeout(processNext, delayBetween);
           }
@@ -375,7 +375,7 @@ export class AppComponent implements AfterViewInit {
   cancelBatchImport(): void {
     if (this.importInProgress) {
       this.cancelImportFlag = true;
-      this.batchImportStatus += ' Cancelling...';
+      this.batchImportStatus += ' Annulation...';
     }
   }
 
@@ -398,7 +398,7 @@ export class AppComponent implements AfterViewInit {
       ];
     }
     if (!urls.length) {
-      alert('No URLs found for the selected filter.');
+      alert('Aucune URL trouvé pour le filtre sélectionné.');
       return;
     }
     const content = urls.join('\n');
@@ -429,13 +429,13 @@ export class AppComponent implements AfterViewInit {
       ];
     }
     if (!urls.length) {
-      alert('No URLs found for the selected filter.');
+      alert('Aucune URL trouvé pour le filtre sélectionné.');
       return;
     }
     const content = urls.join('\n');
     navigator.clipboard.writeText(content)
-      .then(() => alert('URLs copied to clipboard.'))
-      .catch(() => alert('Failed to copy URLs.'));
+      .then(() => alert('URLs copié dans le presse-papier.'))
+      .catch(() => alert('Échec de la copie des URLs.'));
   }
 
   fetchVersionInfo(): void {

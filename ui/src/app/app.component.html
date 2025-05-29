@@ -52,7 +52,7 @@
       <div class="row">
         <div class="col-md-6 col-lg-3 add-url-component">
           <div class="input-group">
-            <span class="input-group-text">Quality</span>
+            <span class="input-group-text">Qualité</span>
             <select class="form-select" name="quality" [(ngModel)]="quality" (change)="qualityChanged()" [disabled]="addInProgress || downloads.loading">
               <option *ngFor="let q of qualities" [ngValue]="q.id">{{ q.text }}</option>
             </select>
@@ -68,10 +68,10 @@
         </div>
         <div class="col-md-6 col-lg-3 add-url-component">
           <div class="input-group">
-            <span class="input-group-text">Auto Start</span>
+            <span class="input-group-text">Démarrer automatiquement</span>
             <select class="form-select" name="autoStart" [(ngModel)]="autoStart" (change)="autoStartChanged()" [disabled]="addInProgress || downloads.loading">
-              <option [ngValue]="true">Yes</option>
-              <option [ngValue]="false">No</option>
+              <option [ngValue]="true">Oui</option>
+              <option [ngValue]="false">Non</option>
             </select>
           </div>
         </div>
@@ -79,26 +79,26 @@
           <div [attr.class]="showAdvanced() ? 'btn-group add-url-group' : 'add-url-group'" ngbDropdown #advancedDropdown="ngbDropdown" display="dynamic" placement="bottom-end">
             <button class="btn btn-primary add-url" type="submit" (click)="addDownload()" [disabled]="addInProgress || downloads.loading">
               <span class="spinner-border spinner-border-sm" role="status" id="add-spinner" *ngIf="addInProgress"></span>
-              {{ addInProgress ? "Adding..." : "Add" }}
+              {{ addInProgress ? "Ajout..." : "Ajouter" }}
             </button>
             <button class="btn btn-primary dropdown-toggle dropdown-toggle-split" id="advancedButton" type="button" title="Advanced options" [disabled]="addInProgress || downloads.loading" ngbDropdownAnchor (click)="advancedDropdown.open()" *ngIf="showAdvanced()">
-              <span class="sr-only">Advanced options</span>
+              <span class="sr-only">Options avancées</span>
             </button>
             <div ngbDropdownMenu aria-labelledby="advancedButton" class="dropdown-menu dropdown-menu-end folder-dropdown-menu">
               <div class="container">
                 <div class="input-group add-url-component">
-                  <span class="input-group-text">Download Folder</span>
+                  <span class="input-group-text">Dossier de téléchargement</span>
                   <ng-select [items]="customDirs$ | async" placeholder="Default" [addTag]="allowCustomDir.bind(this)" addTagText="Create directory" [ngStyle]="{'flex-grow':'1'}" bindLabel="folder" [(ngModel)]="folder" [disabled]="addInProgress || downloads.loading"></ng-select>
                 </div>
                 <div class="input-group add-url-component">
-                  <span class="input-group-text">Custom Name Prefix</span>
+                  <span class="input-group-text">Prefix customisé</span>
                   <input type="text" autocomplete="off" spellcheck="false" class="form-control" placeholder="Default" name="customNamePrefix" [(ngModel)]="customNamePrefix" [disabled]="addInProgress || downloads.loading">
                 </div>
                 <div class="add-url-component">
                   <div class="row align-items-center gy-2">
                     <div class="col-12 col-md-6 order-md-2">
                       <div class="input-group">
-                        <span class="input-group-text">Items limit</span>
+                        <span class="input-group-text">Limite d'items</span>
                         <input type="number" min="0" autocomplete="off" class="form-control" placeholder="Default" name="playlistItemLimit" (keydown)="isNumber($event)" [(ngModel)]="playlistItemLimit" [disabled]="addInProgress || downloads.loading">
                       </div>
                     </div>
@@ -106,7 +106,7 @@
                       <div class="input-group ms-1">
                         <div class="form-check form-switch">
                           <input class="form-check-input" type="checkbox" role="switch" name="playlistStrictMode" [(ngModel)]="playlistStrictMode" [disabled]="addInProgress || downloads.loading">
-                          <label class="form-check-label">Strict Playlist mode</label>
+                          <label class="form-check-label">Mode playlist strict</label>
                         </div>
                       </div>
                     </div>
@@ -117,20 +117,20 @@
           </div>
           <div class="btn-group ms-2" ngbDropdown>
             <button type="button" class="btn btn-secondary" (click)="openBatchImportModal()">
-              Import
+              Importer
             </button>
             <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" ngbDropdownToggle>
-              <span class="visually-hidden">Toggle Dropdown</span>
+              <span class="visually-hidden">Menu déroulant</span>
             </button>
             <ul ngbDropdownMenu class="dropdown-menu dropdown-menu-end">
               <li>
                 <button class="dropdown-item" (click)="exportBatchUrls('all')">
-                  Export All URLs
+                  Exporter toutes les URLs
                 </button>
               </li>
               <li>
                 <button class="dropdown-item" (click)="copyBatchUrls('all')">
-                  Copy All URLs
+                  Copier toutes les URLs
                 </button>
               </li>
             </ul>
@@ -145,7 +145,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Batch Import URLs</h5>
+          <h5 class="modal-title">Importation par lots</h5>
           <button type="button" class="btn-close" aria-label="Close" (click)="closeBatchImportModal()"></button>
         </div>
         <div class="modal-body">
@@ -157,11 +157,11 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-danger me-auto" *ngIf="importInProgress" (click)="cancelBatchImport()">
-            Cancel Import
+            Annuler l'import
           </button>
           <button type="button" class="btn btn-secondary" (click)="closeBatchImportModal()">Close</button>
           <button type="button" class="btn btn-primary" (click)="startBatchImport()" [disabled]="importInProgress">
-            Import URLs
+            URLs importées
           </button>
         </div>
       </div>
@@ -170,12 +170,12 @@
   
 
   <div *ngIf="downloads.loading" class="alert alert-info" role="alert">
-    Connecting to server...
+    Connexion au serveur...
   </div>
-  <div class="metube-section-header">Downloading</div>
+  <div class="metube-section-header">Téléchargement</div>
   <div class="px-2 py-3 border-bottom">
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDelSelected (click)="delSelectedDownloads('queue')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Cancel selected</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDownloadSelected (click)="startSelectedDownloads('queue')"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; Download selected</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDelSelected (click)="delSelectedDownloads('queue')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Annuler la sélection</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #queueDownloadSelected (click)="startSelectedDownloads('queue')"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; Télécharger la sélection</button>
   </div>
   <div class="overflow-auto">
     <table class="table">
@@ -184,9 +184,9 @@
           <th scope="col" style="width: 1rem;">
             <app-master-checkbox #queueMasterCheckbox [id]="'queue'" [list]="downloads.queue" (changed)="queueSelectionChanged($event)"></app-master-checkbox>
           </th>
-          <th scope="col">Video</th>
-          <th scope="col" style="width: 8rem;">Speed</th>
-          <th scope="col" style="width: 7rem;">ETA</th>
+          <th scope="col">Vidéo</th>
+          <th scope="col" style="width: 8rem;">Vitesse</th>
+          <th scope="col" style="width: 7rem;">Temps restant</th>
           <th scope="col" style="width: 6rem;"></th>
         </tr>
       </thead>
@@ -215,13 +215,13 @@
     </table>
   </div>
 
-  <div class="metube-section-header">Completed</div>
+  <div class="metube-section-header">Achevés</div>
   <div class="px-2 py-3 border-bottom">
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDelSelected (click)="delSelectedDownloads('done')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Clear selected</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearCompleted (click)="clearCompletedDownloads()"><fa-icon [icon]="faCheckCircle"></fa-icon>&nbsp; Clear completed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearFailed (click)="clearFailedDownloads()"><fa-icon [icon]="faTimesCircle"></fa-icon>&nbsp; Clear failed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneRetryFailed (click)="retryFailedDownloads()"><fa-icon [icon]="faRedoAlt"></fa-icon>&nbsp; Retry failed</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDownloadSelected (click)="downloadSelectedFiles()"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; Download Selected</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDelSelected (click)="delSelectedDownloads('done')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Effacer la sélection</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearCompleted (click)="clearCompletedDownloads()"><fa-icon [icon]="faCheckCircle"></fa-icon>&nbsp; Effacer les achevés</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearFailed (click)="clearFailedDownloads()"><fa-icon [icon]="faTimesCircle"></fa-icon>&nbsp; Effacer les échoués</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneRetryFailed (click)="retryFailedDownloads()"><fa-icon [icon]="faRedoAlt"></fa-icon>&nbsp; Relancer les échecs</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDownloadSelected (click)="downloadSelectedFiles()"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; Télécharger la sélection</button>
   </div>
   <div class="overflow-auto">
     <table class="table">
@@ -230,8 +230,8 @@
           <th scope="col" style="width: 1rem;">
             <app-master-checkbox #doneMasterCheckbox [id]="'done'" [list]="downloads.done" (changed)="doneSelectionChanged($event)"></app-master-checkbox>
           </th>
-          <th scope="col">Video</th>
-          <th scope="col">File Size</th>
+          <th scope="col">Vidéo</th>
+          <th scope="col">Taille du fichier</th>
           <th scope="col" style="width: 8rem;"></th>
         </tr>
       </thead>
