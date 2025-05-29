@@ -46,7 +46,7 @@
     <div class="container add-url-box">
       <div class="row">
         <div class="col add-url-component input-group">
-          <input type="text" autocomplete="off" spellcheck="false" class="form-control" placeholder="Video or playlist URL" name="addUrl" [(ngModel)]="addUrl" [disabled]="addInProgress || downloads.loading">
+          <input type="text" autocomplete="off" spellcheck="false" class="form-control" placeholder="URL d'une video ou playlist" name="addUrl" [(ngModel)]="addUrl" [disabled]="addInProgress || downloads.loading">
         </div>
       </div>
       <div class="row">
@@ -68,7 +68,7 @@
         </div>
         <div class="col-md-6 col-lg-3 add-url-component">
           <div class="input-group">
-            <span class="input-group-text">Démarrer automatiquement</span>
+            <span class="input-group-text">Démarrage auto</span>
             <select class="form-select" name="autoStart" [(ngModel)]="autoStart" (change)="autoStartChanged()" [disabled]="addInProgress || downloads.loading">
               <option [ngValue]="true">Oui</option>
               <option [ngValue]="false">Non</option>
@@ -88,18 +88,18 @@
               <div class="container">
                 <div class="input-group add-url-component">
                   <span class="input-group-text">Dossier de téléchargement</span>
-                  <ng-select [items]="customDirs$ | async" placeholder="Default" [addTag]="allowCustomDir.bind(this)" addTagText="Create directory" [ngStyle]="{'flex-grow':'1'}" bindLabel="folder" [(ngModel)]="folder" [disabled]="addInProgress || downloads.loading"></ng-select>
+                  <ng-select [items]="customDirs$ | async" placeholder="Defaut" [addTag]="allowCustomDir.bind(this)" addTagText="Create directory" [ngStyle]="{'flex-grow':'1'}" bindLabel="folder" [(ngModel)]="folder" [disabled]="addInProgress || downloads.loading"></ng-select>
                 </div>
                 <div class="input-group add-url-component">
                   <span class="input-group-text">Prefix customisé</span>
-                  <input type="text" autocomplete="off" spellcheck="false" class="form-control" placeholder="Default" name="customNamePrefix" [(ngModel)]="customNamePrefix" [disabled]="addInProgress || downloads.loading">
+                  <input type="text" autocomplete="off" spellcheck="false" class="form-control" placeholder="Defaut" name="customNamePrefix" [(ngModel)]="customNamePrefix" [disabled]="addInProgress || downloads.loading">
                 </div>
                 <div class="add-url-component">
                   <div class="row align-items-center gy-2">
                     <div class="col-12 col-md-6 order-md-2">
                       <div class="input-group">
                         <span class="input-group-text">Limite d'items</span>
-                        <input type="number" min="0" autocomplete="off" class="form-control" placeholder="Default" name="playlistItemLimit" (keydown)="isNumber($event)" [(ngModel)]="playlistItemLimit" [disabled]="addInProgress || downloads.loading">
+                        <input type="number" min="0" autocomplete="off" class="form-control" placeholder="Defaut" name="playlistItemLimit" (keydown)="isNumber($event)" [(ngModel)]="playlistItemLimit" [disabled]="addInProgress || downloads.loading">
                       </div>
                     </div>
                     <div class="col-12 col-md-6 order-md-1">
@@ -150,7 +150,7 @@
         </div>
         <div class="modal-body">
           <textarea [(ngModel)]="batchImportText" class="form-control" rows="6"
-            placeholder="Paste one video URL per line"></textarea>
+            placeholder="Collez une URL par ligne"></textarea>
           <div class="mt-2">
             <small *ngIf="batchImportStatus">{{ batchImportStatus }}</small>
           </div>
@@ -219,7 +219,7 @@
   <div class="px-2 py-3 border-bottom">
     <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDelSelected (click)="delSelectedDownloads('done')"><fa-icon [icon]="faTrashAlt"></fa-icon>&nbsp; Effacer la sélection</button>
     <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearCompleted (click)="clearCompletedDownloads()"><fa-icon [icon]="faCheckCircle"></fa-icon>&nbsp; Effacer les achevés</button>
-    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearFailed (click)="clearFailedDownloads()"><fa-icon [icon]="faTimesCircle"></fa-icon>&nbsp; Effacer les échoués</button>
+    <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneClearFailed (click)="clearFailedDownloads()"><fa-icon [icon]="faTimesCircle"></fa-icon>&nbsp; Effacer les échecs</button>
     <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneRetryFailed (click)="retryFailedDownloads()"><fa-icon [icon]="faRedoAlt"></fa-icon>&nbsp; Relancer les échecs</button>
     <button type="button" class="btn btn-link text-decoration-none px-0 me-4" disabled #doneDownloadSelected (click)="downloadSelectedFiles()"><fa-icon [icon]="faDownload"></fa-icon>&nbsp; Télécharger la sélection</button>
   </div>
