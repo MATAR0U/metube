@@ -1,27 +1,22 @@
-# MeTube
+# MeTube (version française)
 
-> **_NOTE:_**  32-bit ARM builds have been retired (a full year after [other major players](https://www.linuxserver.io/blog/a-farewell-to-arm-hf)), as new Node versions don't support them, and continued security updates and dependencies require new Node versions. Please migrate to a 64-bit OS to continue receiving MeTube upgrades.
-
-![Build Status](https://github.com/alexta69/metube/actions/workflows/main.yml/badge.svg)
-![Docker Pulls](https://img.shields.io/docker/pulls/alexta69/metube.svg)
-
-Web GUI for youtube-dl (using the [yt-dlp](https://github.com/yt-dlp/yt-dlp) fork) with playlist support. Allows you to download videos from YouTube and [dozens of other sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md).
+Interface web pour youtube-dl (utilisant le fork [yt-dlp](https://github.com/yt-dlp/yt-dlp)) avec le support de playlist. Permet de télécharger des vidéos depuis YouTube et des [dizaines d'autres sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md).
 
 ![screenshot1](https://github.com/alexta69/metube/raw/master/screenshot.gif)
 
-## Run using Docker
+## Utiliser docker
 
 ```bash
-docker run -d -p 8081:8081 -v /path/to/downloads:/downloads ghcr.io/alexta69/metube
+docker run -d -p 8081:8081 -v /path/to/downloads:/downloads ghcr.io/matar0u/metube-fr
 ```
 
-## Run using docker-compose
+## Utiliser docker compose
 
 ```yaml
 services:
   metube:
-    image: ghcr.io/alexta69/metube
-    container_name: metube
+    image: ghcr.io/matar0u/metube-fr
+    container_name: metube-fr
     restart: unless-stopped
     ports:
       - "8081:8081"
@@ -29,44 +24,45 @@ services:
       - /path/to/downloads:/downloads
 ```
 
-## Configuration via environment variables
+## Configuration via les variables d'environment
 
-Certain values can be set via environment variables, using the `-e` parameter on the docker command line, or the `environment:` section in docker-compose.
+Certains paramètres peuvent être défini par variable d'environnement, utilisant l'option `-e` avec la commande docker, ou la section `environment:` dans le docker-compose.
 
-* __UID__: user under which MeTube will run. Defaults to `1000`.
-* __GID__: group under which MeTube will run. Defaults to `1000`.
-* __UMASK__: umask value used by MeTube. Defaults to `022`.
-* __DEFAULT_THEME__: default theme to use for the ui, can be set to `light`, `dark` or `auto`. Defaults to `auto`.
-* __DOWNLOAD_DIR__: path to where the downloads will be saved. Defaults to `/downloads` in the docker image, and `.` otherwise.
-* __AUDIO_DOWNLOAD_DIR__: path to where audio-only downloads will be saved, if you wish to separate them from the video downloads. Defaults to the value of `DOWNLOAD_DIR`.
-* __DOWNLOAD_DIRS_INDEXABLE__: if `true`, the download dirs (__DOWNLOAD_DIR__ and __AUDIO_DOWNLOAD_DIR__) are indexable on the webserver. Defaults to `false`.
-* __CUSTOM_DIRS__: whether to enable downloading videos into custom directories within the __DOWNLOAD_DIR__ (or __AUDIO_DOWNLOAD_DIR__). When enabled, a drop-down appears next to the Add button to specify the download directory. Defaults to `true`.
-* __CREATE_CUSTOM_DIRS__: whether to support automatically creating directories within the __DOWNLOAD_DIR__ (or __AUDIO_DOWNLOAD_DIR__) if they do not exist. When enabled, the download directory selector becomes supports free-text input, and the specified directory will be created recursively. Defaults to `true`.
-* __STATE_DIR__: path to where the queue persistence files will be saved. Defaults to `/downloads/.metube` in the docker image, and `.` otherwise.
-* __TEMP_DIR__: path where intermediary download files will be saved. Defaults to `/downloads` in the docker image, and `.` otherwise.
-  * Set this to an SSD or RAM filesystem (e.g., `tmpfs`) for better performance
-  * __Note__: Using a RAM filesystem may prevent downloads from being resumed
-* __DELETE_FILE_ON_TRASHCAN__: if `true`, downloaded files are deleted on the server, when they are trashed from the "Completed" section of the UI. Defaults to `false`.
-* __URL_PREFIX__: base path for the web server (for use when hosting behind a reverse proxy). Defaults to `/`.
-* __PUBLIC_HOST_URL__: base URL for the download links shown in the UI for completed files. By default MeTube serves them under its own URL. If your download directory is accessible on another URL and you want the download links to be based there, use this variable to set it.
-* __HTTPS__: use `https` instead of `http`(__CERTFILE__ and __KEYFILE__ required). Defaults to `false`.
-* __CERTFILE__: HTTPS certificate file path.
-* __KEYFILE__: HTTPS key file path.
-* __PUBLIC_HOST_AUDIO_URL__: same as PUBLIC_HOST_URL but for audio downloads.
-* __OUTPUT_TEMPLATE__: the template for the filenames of the downloaded videos, formatted according to [this spec](https://github.com/yt-dlp/yt-dlp/blob/master/README.md#output-template). Defaults to `%(title)s.%(ext)s`.
-* __OUTPUT_TEMPLATE_CHAPTER__: the template for the filenames of the downloaded videos, when split into chapters via postprocessors. Defaults to `%(title)s - %(section_number)s %(section_title)s.%(ext)s`.
-* __OUTPUT_TEMPLATE_PLAYLIST__: the template for the filenames of the downloaded videos, when downloaded as a playlist. Defaults to `%(playlist_title)s/%(title)s.%(ext)s`. When empty then `OUTPUT_TEMPLATE` is used.
-* __DEFAULT_OPTION_PLAYLIST_STRICT_MODE__: if `true`, the "Strict Playlist mode" switch will be enabled by default. In this mode the playlists will be downloaded only if the url strictly points to a playlist. Urls to videos inside a playlist will be treated same as direct video url. Defaults to `false` .
-* __DEFAULT_OPTION_PLAYLIST_ITEM_LIMIT__: Maximum number of playlist items that can be downloaded. Defaults to `0` (no limit).
-* __YTDL_OPTIONS__: Additional options to pass to yt-dlp, in JSON format. [See available options here](https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py#L220). They roughly correspond to command-line options, though some do not have exact equivalents here, for example `--recode-video` has to be specified via `postprocessors`. Also note that dashes are replaced with underscores. You may find [this script](https://github.com/yt-dlp/yt-dlp/blob/master/devscripts/cli_to_api.py) helpful for converting from command line options to `YTDL_OPTIONS`.
-* __YTDL_OPTIONS_FILE__: A path to a JSON file that will be loaded and used for populating `YTDL_OPTIONS` above. Please note that if both `YTDL_OPTIONS_FILE` and `YTDL_OPTIONS` are specified, the options in `YTDL_OPTIONS` take precedence.
-* __ROBOTS_TXT__: A path to a `robots.txt` file mounted in the container
-* __DOWNLOAD_MODE__ :This flag controls how downloads are scheduled and executed. Options are `sequential`, `concurrent`, and `limited`.  Defaults to `limited`:
-    *   `sequential`: Downloads are processed one at a time. A new download won’t start until the previous one has finished. This mode is useful for conserving system resources or ensuring downloads occur in a strict order.
-    *   `concurrent`: Downloads are started immediately as they are added, with no built-in limit on how many run simultaneously. This mode may overwhelm your system if too many downloads start at once.
-    *   `limited`: Downloads are started concurrently but are capped by a concurrency limit. In this mode, a semaphore is used so that at most a fixed number of downloads run at any given time.
-*   **MAX\_CONCURRENT\_DOWNLOADS**  This flag is used only when **DOWNLOAD\_MODE** is set to **limited**.  
-    It specifies the maximum number of simultaneous downloads allowed. For example, if set to `5`, then at most five downloads will run concurrently, and any additional downloads will wait until one of the active downloads completes. Defaults to `3`. 
+* __UID__: utilisateur sous lequel MeTube va tourner. `1000` par défaut.
+* __GID__: groupe sous lequel MeTube va tourner. `1000` par défaut.
+* __UMASK__: valeur umask utilisé par MeTube. `022` par défaut.
+* __DEFAULT_THEME__: theme par défaut utilisé pour l'ui, peut être `light`, `dark` ou `auto`. `auto` par défaut.
+* __DOWNLOAD_DIR__: chemin où les téléchargement seront enregistrés. `/downloads` par défaut dans l'image docker, sinon `.`.
+* __AUDIO_DOWNLOAD_DIR__: chemin où les téléchargement en audio uniquement seront enregistrés, si vous souhaitez les séparés des vidéos. `DOWNLOAD_DIR` par défaut.
+* __DOWNLOAD_DIRS_INDEXABLE__: si `true`, les dossiers (__DOWNLOAD_DIR__ et __AUDIO_DOWNLOAD_DIR__) seront indéxé sur le serveur web. `false` par défaut.
+* __CUSTOM_DIRS__: activation ou non du téléchargement de vidéos dans des répertoires personnalisés au sein de __DOWNLOAD_DIR__ (ou __AUDIO_DOWNLOAD_DIR__). Lorsque cette option est activée, une liste déroulante apparaît à côté du bouton "Ajouter" pour spécifier le répertoire de téléchargement. `true` par défaut.
+* __CREATE_CUSTOM_DIRS__: activation ou non de la création automatique de répertoires dans le __DOWNLOAD_DIR__ (ou __AUDIO_DOWNLOAD_DIR__) s'ils n'existent pas. Lorsque cette option est activée, le sélecteur de répertoire de téléchargement prend en charge la saisie de texte libre et le répertoire spécifié est créé de manière récursive. `true` par défaut.
+* __STATE_DIR__: chemin où les fichiers de persistance de la file d'attente seront sauvegardés. `/downloads/.metube` par défaut dans l'image docker, sinon `.`.
+* __TEMP_DIR__: chemin où les fichiers de téléchargement intermédiaires seront sauvegardés. `/downloads` par défaut dans l'image docker, sinon `.`.
+  * Définissez un système de fichier SSD ou RAM (ex., `tmpfs`) pour de meilleur performances
+  * __Note__: L'utilisation d'un système de fichier RAM peut empêcher la reprise des téléchargements
+* __DELETE_FILE_ON_TRASHCAN__: si `true`, les fichiers téléchargés sont supprimés du serveur lorsqu'ils sont mis à la corbeille depuis la section "Achevé" sur l'interface utilisateur. `false` par défaut.
+* __URL_PREFIX__: chemin de base pour le serveur web (à utiliser lors d'un hébergement derrière un reverse proxy). `/` par défaut.
+* __PUBLIC_HOST_URL__: URL de base utilisée pour les liens de téléchargement affichés dans l’interface. Par défaut, MeTube sert les fichiers à partir de sa propre URL. Si votre répertoire de téléchargement est accessible via une autre URL (par exemple via un reverse proxy ou un serveur web tiers), utilisez cette variable pour la modifier.
+* __HTTPS__: utilise `https` au lieu de `http` (les variables __CERTFILE__ et __KEYFILE__ sont alors requises). `false` par défaut.
+* __CERTFILE__: chemin vers le fichier de certificat SSL à utiliser avec HTTPS.
+* __KEYFILE__: chemin vers la clé privée SSL à utiliser avec HTTPS.
+* __PUBLIC_HOST_AUDIO_URL__: identique à __PUBLIC_HOST_URL__, mais s'applique uniquement aux téléchargements audio.
+* __OUTPUT_TEMPLATE__: modèle utilisé pour nommer les fichiers téléchargés, selon [cette spécification](https://github.com/yt-dlp/yt-dlp/blob/master/README.md#output-template). `%(title)s.%(ext)s` par défaut.
+* __OUTPUT_TEMPLATE_CHAPTER__: modèle utilisé pour nommer les fichiers quand ils sont découpés par chapitres via les post-traitements. `%(title)s - %(section_number)s %(section_title)s.%(ext)s` par défaut.
+* __OUTPUT_TEMPLATE_PLAYLIST__: modèle utilisé pour nommer les fichiers lorsqu’ils proviennent d’une playlist. `%(playlist_title)s/%(title)s.%(ext)s` par défaut. Si vide, c’est __OUTPUT_TEMPLATE__ qui est utilisé.
+* __DEFAULT_OPTION_PLAYLIST_STRICT_MODE__: si `true`, l’option "Mode Playlist strict" sera activée par défaut. Dans ce mode, les playlists ne seront téléchargées que si l’URL correspond strictement à une playlist. Les vidéos individuelles dans une playlist seront traitées comme des vidéos seules. `false` par défaut.
+* __DEFAULT_OPTION_PLAYLIST_ITEM_LIMIT__: nombre maximum d’éléments d’une playlist pouvant être téléchargés. `0` par défaut (pas de limite).
+* __YTDL_OPTIONS__: options supplémentaires à transmettre à `yt-dlp`, au format JSON. [Voir les options disponibles ici](https://github.com/yt-dlp/yt-dlp/blob/master/yt_dlp/YoutubeDL.py#L220). Ces options correspondent en grande partie à celles de la ligne de commande, mais certaines doivent être adaptées (par exemple, `--recode-video` doit être passé via les `postprocessors`). Les tirets sont remplacés par des underscores. Ce [script](https://github.com/yt-dlp/yt-dlp/blob/master/devscripts/cli_to_api.py) peut vous aider à convertir les options CLI.
+* __YTDL_OPTIONS_FILE__: chemin vers un fichier JSON contenant des options `yt-dlp`. Si à la fois __YTDL_OPTIONS_FILE__ et __YTDL_OPTIONS__ sont définis, __YTDL_OPTIONS__ prend le dessus.
+* __ROBOTS_TXT__: chemin vers un fichier `robots.txt` monté dans le conteneur.
+* __DOWNLOAD_MODE__: contrôle la façon dont les téléchargements sont planifiés et exécutés. Trois modes sont disponibles : `sequential`, `concurrent`, et `limited`. `limited` par défaut :
+  * `sequential` : un téléchargement à la fois. Le suivant ne commence qu'une fois le précédent terminé. Idéal pour limiter l’utilisation des ressources ou maintenir un ordre précis.
+  * `concurrent` : tous les téléchargements commencent immédiatement, sans limite. Peut surcharger votre système si trop de téléchargements sont lancés à la fois.
+  * `limited` : les téléchargements commencent en parallèle mais sont limités à un nombre maximum simultané via un sémaphore.
+* __MAX_CONCURRENT_DOWNLOADS__: utilisé uniquement si __DOWNLOAD_MODE__ est `limited`. Définit le nombre maximal de téléchargements simultanés. Par exemple, si réglé à `5`, seuls cinq téléchargements seront actifs en même temps, les suivants seront mis en attente. `3` par défaut.
+
+> ⚠️ **Remarque** : Traduction en cours. La suite du README n'a pas encore été traduite.
 
 The project's Wiki contains examples of useful configurations contributed by users of MeTube:
 * [YTDL_OPTIONS Cookbook](https://github.com/alexta69/metube/wiki/YTDL_OPTIONS-Cookbook)
