@@ -1,8 +1,9 @@
 # MeTube (version française)
+### Avec des améliorations, type [personnalisation de l'UI](https://github.com/MATAR0U/metube-fr?tab=readme-ov-file#personnalisationdelui)
 
 Interface web pour youtube-dl (utilisant le fork [yt-dlp](https://github.com/yt-dlp/yt-dlp)) avec le support de playlist. Permet de télécharger des vidéos depuis YouTube et des [dizaines d'autres sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md).
 
-![screenshot1](https://github.com/alexta69/metube/raw/master/screenshot.gif)
+![screenshot1](https://github.com/MATAR0U/metube/raw/master/screenshot.gif)
 
 ## Utiliser docker
 
@@ -62,7 +63,27 @@ Certains paramètres peuvent être défini par variable d'environnement, utilisa
   * `limited` : les téléchargements commencent en parallèle mais sont limités à un nombre maximum simultané via un sémaphore.
 * __MAX_CONCURRENT_DOWNLOADS__: utilisé uniquement si __DOWNLOAD_MODE__ est `limited`. Définit le nombre maximal de téléchargements simultanés. Par exemple, si réglé à `5`, seuls cinq téléchargements seront actifs en même temps, les suivants seront mis en attente. `3` par défaut.
 
-> ⚠️ **Remarque** : Traduction en cours. La suite du README n'a pas encore été traduite.
+### Personnalisation de l'UI
+* __METUBE_TITLE__: défini le nom de la page web. `MeTube` par défaut.
+* __SHOW_VERSION__: affiche ou non la version de yt-dl en bas de page. `true` par défaut.
+* __CUSTOM_LOGO__: affiche ou non le logo personnalisé en haut à gauche. `false` par défaut.
+* __CUSTOM_ICO__: affiche ou non le favicon personnalisé. `false` par défaut.
+
+> [!WARNING]
+> Pour afficher le logo et le favicon personnalisé, il faut monter un volume sur `/app/ui/dist/metube/assets/custom/`
+> Le dossier doit contenir `logo.png` et/ou `favicon.ico`
+
+Exemple docker :
+```bash
+docker run -d \
+-e CUSTOM_LOGO=true \
+-e CUSTOM_ICO=true \
+-v /docker/metube/customlogo:/app/ui/dist/metube/assets/custom/ \
+-p 8081:8081 matar0u/metube-fr
+```
+
+> [!IMPORTANT]
+> Traduction en cours. La suite du README n'a pas encore été traduite.
 
 The project's Wiki contains examples of useful configurations contributed by users of MeTube:
 * [YTDL_OPTIONS Cookbook](https://github.com/alexta69/metube/wiki/YTDL_OPTIONS-Cookbook)
@@ -152,8 +173,8 @@ It's possible to configure MeTube to listen in HTTPS mode. `docker-compose` exam
 ```yaml
 services:
   metube:
-    image: ghcr.io/alexta69/metube
-    container_name: metube
+    image: ghcr.io/matar0u/metube-fr
+    container_name: metube-fr
     restart: unless-stopped
     ports:
       - "8081:8081"

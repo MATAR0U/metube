@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { faTrashAlt, faCheckCircle, faTimesCircle, IconDefinition } from '@fortawesome/free-regular-svg-icons';
 import { faRedoAlt, faSun, faMoon, faCircleHalfStroke, faCheck, faExternalLinkAlt, faDownload } from '@fortawesome/free-solid-svg-icons';
 import { CookieService } from 'ngx-cookie-service';
@@ -10,6 +11,8 @@ import { MasterCheckboxComponent } from './master-checkbox.component';
 import { Formats, Format, Quality } from './formats';
 import { Theme, Themes } from './theme';
 import {KeyValue} from "@angular/common";
+
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -38,6 +41,9 @@ export class AppComponent implements AfterViewInit {
   importInProgress = false;
   cancelImportFlag = false;
   versionInfo: string | null = null;
+  showVersion: boolean;
+  metubeTitle: string;
+  customLogo: SafeHtml;
 
   @ViewChild('queueMasterCheckbox') queueMasterCheckbox: MasterCheckboxComponent;
   @ViewChild('queueDelSelected') queueDelSelected: ElementRef;
@@ -60,7 +66,9 @@ export class AppComponent implements AfterViewInit {
   faDownload = faDownload;
   faExternalLinkAlt = faExternalLinkAlt;
 
-  constructor(public downloads: DownloadsService, private cookieService: CookieService, private http: HttpClient) {
+  private showVersionSubject = new BehaviorSubject<boolean | undefined>(undefined);
+
+  constructor(public downloads: DownloadsService, private cookieService: CookieService, private http: HttpClient, private sanitizer: DomSanitizer) {
     this.format = cookieService.get('metube_format') || 'any';
     // Needs to be set or qualities won't automatically be set
     this.setQualities()
@@ -99,7 +107,11 @@ export class AppComponent implements AfterViewInit {
       this.doneClearFailed.nativeElement.disabled = failed === 0;
       this.doneRetryFailed.nativeElement.disabled = failed === 0;
     });
-    this.fetchVersionInfo();
+    this.showVersionSubject.subscribe(showVersion => {
+      if (showVersion !== undefined) {
+        this.fetchVersionInfo();
+      }
+    });
   }
 
   // workaround to allow fetching of Map values in the order they were inserted
@@ -149,6 +161,16 @@ export class AppComponent implements AfterViewInit {
         const playlistItemLimit = config['DEFAULT_OPTION_PLAYLIST_ITEM_LIMIT'];
         if (playlistItemLimit !== '0') {
           this.playlistItemLimit = playlistItemLimit;
+        }
+        this.showVersion = config['SHOW_VERSION'] ?? true;
+        this.showVersionSubject.next(this.showVersion);
+
+        this.metubeTitle = config['METUBE_TITLE']
+
+        if (config['CUSTOM_LOGO']) {
+          this.customLogo = this.sanitizer.bypassSecurityTrustHtml('<img src="assets/custom/logo.png" alt="Logo" class="navbar-logo">');
+        } else {
+          this.customLogo = '';
         }
       }
     });
@@ -439,16 +461,22 @@ export class AppComponent implements AfterViewInit {
   }
 
   fetchVersionInfo(): void {
-    const baseUrl = `${window.location.origin}${window.location.pathname.replace(/\/[^\/]*$/, '/')}`;
-    const versionUrl = `${baseUrl}version`;
-    this.http.get<{ version: string}>(versionUrl)
-      .subscribe({
-        next: (data) => {
-          this.versionInfo = `yt-dlp version: ${data.version}`;
-        },
-        error: () => {
-          this.versionInfo = '';
-        }
-      });
+    if (this.showVersion === true) {
+      const baseUrl = `${window.location.origin}${window.location.pathname.replace(/\/[^\/]*$/, '/')}`;
+      const versionUrl = `${baseUrl}version`;
+
+      this.http.get<{ version: string }>(versionUrl)
+        .subscribe({
+          next: (data) => {
+            this.versionInfo = `yt-dlp version: ${data.version}`;
+          },
+          error: (error) => {
+            console.error('Error fetching version info:', error);
+            this.versionInfo = '';
+          }
+        });
+    } else {
+      this.versionInfo = '';
+    }
   }
 }
