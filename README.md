@@ -1,5 +1,5 @@
 # MeTube (version française)
-### Avec des améliorations, type [personnalisation de l'UI](https://github.com/MATAR0U/metube-fr?tab=readme-ov-file#personnalisationdelui)
+### Avec des améliorations, type [personnalisation de l'UI](https://github.com/MATAR0U/metube-fr?tab=readme-ov-file#personnalisation-de-lui)
 
 Interface web pour youtube-dl (utilisant le fork [yt-dlp](https://github.com/yt-dlp/yt-dlp)) avec le support de playlist. Permet de télécharger des vidéos depuis YouTube et des [dizaines d'autres sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md).
 
