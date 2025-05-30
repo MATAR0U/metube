@@ -66,6 +66,7 @@ Certains paramètres peuvent être défini par variable d'environnement, utilisa
 ### Personnalisation de l'UI
 * __METUBE_TITLE__: défini le nom de la page web. `MeTube` par défaut.
 * __SHOW_VERSION__: affiche ou non la version de yt-dl en bas de page. `true` par défaut.
+* __CUSTOM_COLOR__: valeur héxadécimal pour définir la couleur principale de l'application. `#0d6efd` (bleu) par défaut.
 * __CUSTOM_LOGO__: affiche ou non le logo personnalisé en haut à gauche. `false` par défaut.
 * __CUSTOM_ICO__: affiche ou non le favicon personnalisé. `false` par défaut.
 
